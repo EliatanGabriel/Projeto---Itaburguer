@@ -243,8 +243,7 @@ window.SUPABASE_CONFIG = {
 };
 
 
-// Ita Burger — cliente Supabase (tabela store_state, id=1, coluna data jsonb)
-// Carrega/salva o estado inteiro (mesmo JSON de data/cardapio.json).
+// Ita Burger — cliente Supabase (store_state + orders)
 // Se SUPABASE_CONFIG estiver vazio ou o CDN falhar, sbOn=false (modo local).
 
 const SUPABASE = (()=>{
@@ -272,6 +271,31 @@ async function sbSave(state){
   sbState.saving=false;
   if(error){sbState.error=error.message||'Erro ao salvar';throw new Error(sbState.error)}
   sbState.updatedAt=payload.updated_at;
+  return true;
+}
+function orderRow(o){return{id:o.id,t:o.t,sig:o.sig||'',name:o.name||'',mode:o.mode||'',hood:o.hood||'',items:o.items||[],sub:Number(o.sub)||0,fee:Number(o.fee)||0,total:Number(o.total)||0,pay:o.pay||'',st:o.st||'todo'}}
+async function sbInsertOrder(o){
+  if(!SUPABASE)return false;
+  const {error}=await SUPABASE.from('orders').upsert(orderRow(o));
+  if(error)throw new Error(error.message||'Erro ao inserir pedido');
+  return true;
+}
+async function sbListOrders(){
+  if(!SUPABASE)return [];
+  const {data,error}=await SUPABASE.from('orders').select('id,t,sig,name,mode,hood,items,sub,fee,total,pay,st').order('t',{ascending:false}).limit(200);
+  if(error)throw new Error(error.message||'Erro ao listar pedidos');
+  return data||[];
+}
+async function sbUpdateOrder(id,patch){
+  if(!SUPABASE)return false;
+  const {error}=await SUPABASE.from('orders').update(patch).eq('id',id);
+  if(error)throw new Error(error.message||'Erro ao atualizar pedido');
+  return true;
+}
+async function sbDeleteOrder(id){
+  if(!SUPABASE)return false;
+  const {error}=await SUPABASE.from('orders').delete().eq('id',id);
+  if(error)throw new Error(error.message||'Erro ao excluir pedido');
   return true;
 }
 
@@ -915,7 +939,9 @@ function hoodFld(){const z=zonesOn();if(!z.length)return `<label class="fld"><sp
   return `<label class="fld"><span class="lbl">Bairro</span><select class="in" id="o-hood" data-zone="1"><option value="">Escolha o bairro</option>${z.map(x=>`<option value="${esc(x.id)}"${x.id===ORDER.zone?' selected':''}>${esc(x.name)} · ${brl(x.fee)}</option>`).join('')}</select></label>`}
 
 function logOrder(){const sig=buildMsg(),now=Date.now(),l=ORDERS[0];if(l&&l.sig===sig&&now-l.t<60000)return;
-  ORDERS.unshift({id:uid(),t:now,sig,name:ORDER.name,mode:ORDER.mode,hood:ORDER.mode==='entrega'?ORDER.hood:'',items:CART.map(x=>{const i=lineInfo(x);return i?x.qty+'x '+i.name:''}).filter(Boolean),sub:cartTotal(),fee:deliv(),total:grand(),pay:PAY[ORDER.pay]||'',st:'todo'});saveOrders()}
+  const o={id:uid(),t:now,sig,name:ORDER.name,mode:ORDER.mode,hood:ORDER.mode==='entrega'?ORDER.hood:'',items:CART.map(x=>{const i=lineInfo(x);return i?x.qty+'x '+i.name:''}).filter(Boolean),sub:cartTotal(),fee:deliv(),total:grand(),pay:PAY[ORDER.pay]||'',st:'todo'};
+  ORDERS.unshift(o);saveOrders();
+  if(typeof sbInsertOrder==='function'&&sbOn)sbInsertOrder(o).catch(e=>console.warn('[ita] pedido no Supabase falhou:',e&&e.message))}
 
 
 
@@ -1251,13 +1277,13 @@ function aFin(){
   <div class="arow"><button class="btn btn-line btn-sm" data-act="fm" data-set="-1">Mês passado</button><button class="btn btn-line btn-sm" data-act="fm" data-set="0">Mês atual</button></div></div>
   <div class="stats"><div class="stat big"><span class="lbl">Faturamento do mês</span><b>${brl(tot)}</b><small>${cnt} pedidos${cnt?' · ticket médio '+brl(tot/cnt):''}</small></div><div class="stat"><span class="lbl">Mês anterior</span><b>${brl(pt)}</b></div><div class="stat"><span class="lbl">Variação</span><b>${diff===null?'—':(diff>0?'+':'')+diff+'%'}</b></div></div>
   <div class="cal">${['D','S','T','Q','Q','S','S'].map(x=>`<em>${x}</em>`).join('')}${cells}</div>
-  <p class="note">Mostra os pedidos registrados neste aparelho.</p>`;
+  <p class="note">Mostra os pedidos na loja (Supabase).</p>`;
 }
 
 function aOrders(){
   const td=ORDERS.filter(o=>new Date(o.t).toDateString()===new Date().toDateString()),sum=a=>a.reduce((x,o)=>x+(Number(o.total)||0),0);
   let h=`<div class="stats"><div class="stat big"><span class="lbl">Faturado hoje</span><b>${brl(sum(td))}</b><small>${td.length} pedidos hoje</small></div><div class="stat"><span class="lbl">Faturado no total</span><b>${brl(sum(ORDERS))}</b></div><div class="stat"><span class="lbl">Pedidos no total</span><b>${ORDERS.length}</b></div></div>
-  <p class="note">Os pedidos aparecem aqui no aparelho em que foram enviados. Pedidos de outros aparelhos você registra manualmente no fim da página.</p>
+  <p class="note">Pedidos de todos os aparelhos (Supabase, atualiza a cada 10s). O cliente também recebe o pedido no WhatsApp.</p>
   <div class="seg seg4">${STAT.map(x=>`<button data-act="ost" data-v="${x[0]}" aria-pressed="${ui.ost===x[0]}">${x[1]} (${ORDERS.filter(o=>o.st===x[0]).length})</button>`).join('')}</div>`;
   const L=ORDERS.filter(o=>o.st===ui.ost);if(!L.length)h+='<p class="note">Nenhum pedido nesta etapa.</p>';
   L.forEach(o=>{const nx=STAT[STAT.findIndex(x=>x[0]===o.st)+1];
@@ -1308,7 +1334,7 @@ function doDel(col,id,gid){
   if(col==='products')S.products=S.products.filter(x=>x.id!==id);
   else if(col==='cats'){S.cats=S.cats.filter(x=>x.id!==id);S.products=S.products.filter(x=>x.cat!==id);if(ui.filter===id)ui.filter='all'}
   else if(col==='links')S.links=S.links.filter(x=>x.id!==id);
-  else if(col==='ads')S.ads=S.ads.filter(x=>x.id!==id);else if(col==='zones')S.zones=S.zones.filter(x=>x.id!==id);else if(col==='orders'){ORDERS=ORDERS.filter(x=>x.id!==id);saveOrders()}
+  else if(col==='ads')S.ads=S.ads.filter(x=>x.id!==id);else if(col==='zones')S.zones=S.zones.filter(x=>x.id!==id);else if(col==='orders'){ORDERS=ORDERS.filter(x=>x.id!==id);saveOrders();if(typeof sbDeleteOrder==='function'&&sbOn)sbDeleteOrder(id).catch(e=>console.warn('[ita] delete pedido falhou:',e&&e.message))}
   else if(col==='groups')S.builder.groups=S.builder.groups.filter(x=>x.id!==id);
   else if(col==='opts'){const g=S.builder.groups.find(x=>x.id===gid);if(g)g.opts=g.opts.filter(x=>x.id!==id)}
 }
@@ -1445,9 +1471,9 @@ const ACT={
   fm(el){ui.fm=el.dataset.set!==undefined?Number(el.dataset.set):ui.fm+Number(el.dataset.v);renderAdmin()},
   scr(el){const t=$(el.dataset.t);if(t&&t.scrollIntoView)t.scrollIntoView({behavior:'smooth'})},
   ost(el){ui.ost=el.dataset.v;renderAdmin()},
-  oadv(el){const o=ORDERS.find(x=>x.id===el.dataset.id);if(!o)return;const i=STAT.findIndex(x=>x[0]===o.st);if(STAT[i+1]){o.st=STAT[i+1][0];saveOrders()}renderAdmin()},
+  oadv(el){const o=ORDERS.find(x=>x.id===el.dataset.id);if(!o)return;const i=STAT.findIndex(x=>x[0]===o.st);if(STAT[i+1]){o.st=STAT[i+1][0];saveOrders();if(typeof sbUpdateOrder==='function'&&sbOn)sbUpdateOrder(o.id,{st:o.st}).catch(e=>console.warn('[ita] update pedido falhou:',e&&e.message))}renderAdmin()},
   addzone(){const n=$('#nz-name').value.trim();if(!n){say('Dê um nome à região.','bad');$('#nz-name').focus();return}S.zones.push({id:uid(),name:n,fee:parseMoney($('#nz-fee').value),on:true});struct('Região adicionada.')},
-  addmo(){const t=parseMoney($('#mo-total').value);if(!t){say('Informe o valor do pedido.','bad');return}const h=$('#mo-hood').value.trim();ORDERS.unshift({id:uid(),t:Date.now(),name:$('#mo-name').value.trim()||'Cliente',mode:h?'entrega':'retirada',hood:h,items:['Pedido registrado manualmente'],sub:t,fee:0,total:t,pay:'',st:'todo'});saveOrders();struct('Pedido registrado.')},
+  addmo(){const t=parseMoney($('#mo-total').value);if(!t){say('Informe o valor do pedido.','bad');return}const h=$('#mo-hood').value.trim();const o={id:uid(),t:Date.now(),name:$('#mo-name').value.trim()||'Cliente',mode:h?'entrega':'retirada',hood:h,items:['Pedido registrado manualmente'],sub:t,fee:0,total:t,pay:'',st:'todo'};ORDERS.unshift(o);saveOrders();if(typeof sbInsertOrder==='function'&&sbOn)sbInsertOrder(o).catch(e=>console.warn('[ita] pedido manual falhou:',e&&e.message));struct('Pedido registrado.')},
   rmimg(el){if(el.dataset.k==='prod'){const p=S.products.find(x=>x.id===el.dataset.id);if(p)p.img=''}else delete S.photos[el.dataset.id];struct('Foto removida.')},
 
   admin(){openAdmin()},closeadmin(){closeAdmin()},
@@ -1554,10 +1580,24 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(ui.admin)closeAd
       const remote=await sbLoad();
       if(remote&&remote.v!==undefined){DATA=remote;S=clone(DATA);normState();LS.del('ita-draft');SS.del('ita-pub')}
     }catch(e){console.warn('[ita] Supabase load falhou, usando dados locais:',e&&e.message)}
+    try{
+      const list=await sbListOrders();
+      if(Array.isArray(list)&&list.length){ORDERS=list;saveOrders()}
+    }catch(e){console.warn('[ita] Supabase orders load falhou:',e&&e.message)}
   }
   cleanCart();saveCart();initBP();renderAll();
   const pb=document.querySelector('#btn-publish');if(pb&&sbOn)pb.textContent='Salvar no Supabase';
   setInterval(()=>{if(S.ads.filter(a=>a.on&&String(a.text).trim()).length>1){adIdx++;renderAds()}},5000);
+  if(typeof sbListOrders==='function'&&sbOn)setInterval(async ()=>{
+    if(document.hidden)return;
+    try{
+      const list=await sbListOrders();
+      if(!Array.isArray(list))return;
+      const sig=list.length+':'+(list[0]?list[0].id+list[0].st+list[0].t:'');
+      const cur=ORDERS.length+':'+(ORDERS[0]?ORDERS[0].id+ORDERS[0].st+ORDERS[0].t:'');
+      if(sig!==cur){ORDERS=list;saveOrders();if(ui.admin&&(ui.atab==='orders'||ui.atab==='fin'))renderAdmin()}
+    }catch(e){}
+  },10000);
   if(SS.get('ita-reopen')==='1'){SS.del('ita-reopen');openAdmin()}
 })();
 

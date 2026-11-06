@@ -1,5 +1,4 @@
-// Ita Burger — cliente Supabase (tabela store_state, id=1, coluna data jsonb)
-// Carrega/salva o estado inteiro (mesmo JSON de data/cardapio.json).
+// Ita Burger — cliente Supabase (store_state + orders)
 // Se SUPABASE_CONFIG estiver vazio ou o CDN falhar, sbOn=false (modo local).
 
 const SUPABASE = (()=>{
@@ -27,5 +26,30 @@ async function sbSave(state){
   sbState.saving=false;
   if(error){sbState.error=error.message||'Erro ao salvar';throw new Error(sbState.error)}
   sbState.updatedAt=payload.updated_at;
+  return true;
+}
+function orderRow(o){return{id:o.id,t:o.t,sig:o.sig||'',name:o.name||'',mode:o.mode||'',hood:o.hood||'',items:o.items||[],sub:Number(o.sub)||0,fee:Number(o.fee)||0,total:Number(o.total)||0,pay:o.pay||'',st:o.st||'todo'}}
+async function sbInsertOrder(o){
+  if(!SUPABASE)return false;
+  const {error}=await SUPABASE.from('orders').upsert(orderRow(o));
+  if(error)throw new Error(error.message||'Erro ao inserir pedido');
+  return true;
+}
+async function sbListOrders(){
+  if(!SUPABASE)return [];
+  const {data,error}=await SUPABASE.from('orders').select('id,t,sig,name,mode,hood,items,sub,fee,total,pay,st').order('t',{ascending:false}).limit(200);
+  if(error)throw new Error(error.message||'Erro ao listar pedidos');
+  return data||[];
+}
+async function sbUpdateOrder(id,patch){
+  if(!SUPABASE)return false;
+  const {error}=await SUPABASE.from('orders').update(patch).eq('id',id);
+  if(error)throw new Error(error.message||'Erro ao atualizar pedido');
+  return true;
+}
+async function sbDeleteOrder(id){
+  if(!SUPABASE)return false;
+  const {error}=await SUPABASE.from('orders').delete().eq('id',id);
+  if(error)throw new Error(error.message||'Erro ao excluir pedido');
   return true;
 }

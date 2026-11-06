@@ -1,6 +1,6 @@
 # Supabase — Ita Burger
 
-Banco: tabela `store_state` (1 linha, `id=1`, coluna `data jsonb` = todo o JSON da loja).
+Banco: `store_state` (1 linha, `id=1`, `data jsonb` = JSON da loja) + `orders` (pedidos de todos os aparelhos).
 
 ## Passo a passo
 
@@ -27,10 +27,12 @@ Para produção, faça um destas (recomendado):
 
 ## Como funciona no código
 
-- `js/supabase.js`: `sbLoad()` lê `store_state`, `sbSave(S)` faz `upsert` com `S` inteiro.
-- `js/main.js`: antes do primeiro render, tenta `sbLoad()`; se falhar, usa `data/cardapio.json` / `#ita-data`.
+- `js/supabase.js`: `sbLoad()` lê `store_state`, `sbSave(S)` faz `upsert` com `S` inteiro; `sbInsertOrder/sbListOrders/sbUpdateOrder/sbDeleteOrder` cuidam da tabela `orders`.
+- `js/main.js`: antes do primeiro render, tenta `sbLoad()` e `sbListOrders()`; se falhar, usa `data/cardapio.json` / `#ita-data`. Poll a cada 10s atualiza Pedidos/Financeiro do dono.
 - `js/admin.js`: cada `touch()` (debounce 400ms) salva no Supabase; botão passa a “Salvar no Supabase”. Sem config, volta ao rascunho local + publicar via Artifact.
-- Pedidos (`orders`): continuam locais em `localStorage["ita-orders"]`. Próxima fase pode migrar para tabela `orders`.
+- Pedidos: cliente insere em `orders` ao clicar “Enviar pelo WhatsApp” (`logOrder`); dono vê/avança status no Admin (também recebe no WhatsApp).
+
+> **Você já rodou `schema.sql` antes?** Rode só `supabase/orders.sql` agora (SQL Editor → Run). O `schema.sql` já inclui as duas tabelas para projetos novos.
 
 ## Seed
 

@@ -93,5 +93,7 @@ function hoodFld(){const z=zonesOn();if(!z.length)return `<label class="fld"><sp
   return `<label class="fld"><span class="lbl">Bairro</span><select class="in" id="o-hood" data-zone="1"><option value="">Escolha o bairro</option>${z.map(x=>`<option value="${esc(x.id)}"${x.id===ORDER.zone?' selected':''}>${esc(x.name)} · ${brl(x.fee)}</option>`).join('')}</select></label>`}
 
 function logOrder(){const sig=buildMsg(),now=Date.now(),l=ORDERS[0];if(l&&l.sig===sig&&now-l.t<60000)return;
-  ORDERS.unshift({id:uid(),t:now,sig,name:ORDER.name,mode:ORDER.mode,hood:ORDER.mode==='entrega'?ORDER.hood:'',items:CART.map(x=>{const i=lineInfo(x);return i?x.qty+'x '+i.name:''}).filter(Boolean),sub:cartTotal(),fee:deliv(),total:grand(),pay:PAY[ORDER.pay]||'',st:'todo'});saveOrders()}
+  const o={id:uid(),t:now,sig,name:ORDER.name,mode:ORDER.mode,hood:ORDER.mode==='entrega'?ORDER.hood:'',items:CART.map(x=>{const i=lineInfo(x);return i?x.qty+'x '+i.name:''}).filter(Boolean),sub:cartTotal(),fee:deliv(),total:grand(),pay:PAY[ORDER.pay]||'',st:'todo'};
+  ORDERS.unshift(o);saveOrders();
+  if(typeof sbInsertOrder==='function'&&sbOn)sbInsertOrder(o).catch(e=>console.warn('[ita] pedido no Supabase falhou:',e&&e.message))}
 

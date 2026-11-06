@@ -161,13 +161,13 @@ function aFin(){
   <div class="arow"><button class="btn btn-line btn-sm" data-act="fm" data-set="-1">Mês passado</button><button class="btn btn-line btn-sm" data-act="fm" data-set="0">Mês atual</button></div></div>
   <div class="stats"><div class="stat big"><span class="lbl">Faturamento do mês</span><b>${brl(tot)}</b><small>${cnt} pedidos${cnt?' · ticket médio '+brl(tot/cnt):''}</small></div><div class="stat"><span class="lbl">Mês anterior</span><b>${brl(pt)}</b></div><div class="stat"><span class="lbl">Variação</span><b>${diff===null?'—':(diff>0?'+':'')+diff+'%'}</b></div></div>
   <div class="cal">${['D','S','T','Q','Q','S','S'].map(x=>`<em>${x}</em>`).join('')}${cells}</div>
-  <p class="note">Mostra os pedidos registrados neste aparelho.</p>`;
+  <p class="note">Mostra os pedidos na loja (Supabase).</p>`;
 }
 
 function aOrders(){
   const td=ORDERS.filter(o=>new Date(o.t).toDateString()===new Date().toDateString()),sum=a=>a.reduce((x,o)=>x+(Number(o.total)||0),0);
   let h=`<div class="stats"><div class="stat big"><span class="lbl">Faturado hoje</span><b>${brl(sum(td))}</b><small>${td.length} pedidos hoje</small></div><div class="stat"><span class="lbl">Faturado no total</span><b>${brl(sum(ORDERS))}</b></div><div class="stat"><span class="lbl">Pedidos no total</span><b>${ORDERS.length}</b></div></div>
-  <p class="note">Os pedidos aparecem aqui no aparelho em que foram enviados. Pedidos de outros aparelhos você registra manualmente no fim da página.</p>
+  <p class="note">Pedidos de todos os aparelhos (Supabase, atualiza a cada 10s). O cliente também recebe o pedido no WhatsApp.</p>
   <div class="seg seg4">${STAT.map(x=>`<button data-act="ost" data-v="${x[0]}" aria-pressed="${ui.ost===x[0]}">${x[1]} (${ORDERS.filter(o=>o.st===x[0]).length})</button>`).join('')}</div>`;
   const L=ORDERS.filter(o=>o.st===ui.ost);if(!L.length)h+='<p class="note">Nenhum pedido nesta etapa.</p>';
   L.forEach(o=>{const nx=STAT[STAT.findIndex(x=>x[0]===o.st)+1];
@@ -218,7 +218,7 @@ function doDel(col,id,gid){
   if(col==='products')S.products=S.products.filter(x=>x.id!==id);
   else if(col==='cats'){S.cats=S.cats.filter(x=>x.id!==id);S.products=S.products.filter(x=>x.cat!==id);if(ui.filter===id)ui.filter='all'}
   else if(col==='links')S.links=S.links.filter(x=>x.id!==id);
-  else if(col==='ads')S.ads=S.ads.filter(x=>x.id!==id);else if(col==='zones')S.zones=S.zones.filter(x=>x.id!==id);else if(col==='orders'){ORDERS=ORDERS.filter(x=>x.id!==id);saveOrders()}
+  else if(col==='ads')S.ads=S.ads.filter(x=>x.id!==id);else if(col==='zones')S.zones=S.zones.filter(x=>x.id!==id);else if(col==='orders'){ORDERS=ORDERS.filter(x=>x.id!==id);saveOrders();if(typeof sbDeleteOrder==='function'&&sbOn)sbDeleteOrder(id).catch(e=>console.warn('[ita] delete pedido falhou:',e&&e.message))}
   else if(col==='groups')S.builder.groups=S.builder.groups.filter(x=>x.id!==id);
   else if(col==='opts'){const g=S.builder.groups.find(x=>x.id===gid);if(g)g.opts=g.opts.filter(x=>x.id!==id)}
 }

@@ -48,9 +48,9 @@ const ACT={
   fm(el){ui.fm=el.dataset.set!==undefined?Number(el.dataset.set):ui.fm+Number(el.dataset.v);renderAdmin()},
   scr(el){const t=$(el.dataset.t);if(t&&t.scrollIntoView)t.scrollIntoView({behavior:'smooth'})},
   ost(el){ui.ost=el.dataset.v;renderAdmin()},
-  oadv(el){const o=ORDERS.find(x=>x.id===el.dataset.id);if(!o)return;const i=STAT.findIndex(x=>x[0]===o.st);if(STAT[i+1]){o.st=STAT[i+1][0];saveOrders()}renderAdmin()},
+  oadv(el){const o=ORDERS.find(x=>x.id===el.dataset.id);if(!o)return;const i=STAT.findIndex(x=>x[0]===o.st);if(STAT[i+1]){o.st=STAT[i+1][0];saveOrders();if(typeof sbUpdateOrder==='function'&&sbOn)sbUpdateOrder(o.id,{st:o.st}).catch(e=>console.warn('[ita] update pedido falhou:',e&&e.message))}renderAdmin()},
   addzone(){const n=$('#nz-name').value.trim();if(!n){say('Dê um nome à região.','bad');$('#nz-name').focus();return}S.zones.push({id:uid(),name:n,fee:parseMoney($('#nz-fee').value),on:true});struct('Região adicionada.')},
-  addmo(){const t=parseMoney($('#mo-total').value);if(!t){say('Informe o valor do pedido.','bad');return}const h=$('#mo-hood').value.trim();ORDERS.unshift({id:uid(),t:Date.now(),name:$('#mo-name').value.trim()||'Cliente',mode:h?'entrega':'retirada',hood:h,items:['Pedido registrado manualmente'],sub:t,fee:0,total:t,pay:'',st:'todo'});saveOrders();struct('Pedido registrado.')},
+  addmo(){const t=parseMoney($('#mo-total').value);if(!t){say('Informe o valor do pedido.','bad');return}const h=$('#mo-hood').value.trim();const o={id:uid(),t:Date.now(),name:$('#mo-name').value.trim()||'Cliente',mode:h?'entrega':'retirada',hood:h,items:['Pedido registrado manualmente'],sub:t,fee:0,total:t,pay:'',st:'todo'};ORDERS.unshift(o);saveOrders();if(typeof sbInsertOrder==='function'&&sbOn)sbInsertOrder(o).catch(e=>console.warn('[ita] pedido manual falhou:',e&&e.message));struct('Pedido registrado.')},
   rmimg(el){if(el.dataset.k==='prod'){const p=S.products.find(x=>x.id===el.dataset.id);if(p)p.img=''}else delete S.photos[el.dataset.id];struct('Foto removida.')},
 
   admin(){openAdmin()},closeadmin(){closeAdmin()},

@@ -7,7 +7,7 @@ index.html                entrada (estrutura mínima)
 css/reset.css             safe-area / viewport
 css/style.css             estilos (era #ita-css)
 js/supabase-config.js     URL + anonKey do Supabase (preencher)
-js/supabase.js            cliente Supabase (tabela store_state)
+js/supabase.js            cliente Supabase (store_state + orders)
 js/data.js                dados (era #ita-data) — GERADO de data/cardapio.json
 data/cardapio.json        seed/fallback: produtos, cats, zonas, builder, config
 js/assets.js              logo/hero (caminhos) + ícones SVG
@@ -20,7 +20,8 @@ js/render.js              vitrine, cardápio, home/about, carrinho
 js/admin.js               administração: CRUD, pedidos, finanças, fotos, senha, salvar
 js/actions.js             eventos globais (cliques, inputs, formulários, upload)
 js/main.js                inicialização (tenta Supabase, senão fallback local)
-supabase/schema.sql       SQL para criar a tabela + seed + RLS
+supabase/schema.sql       SQL para criar store_state + seed + RLS
+supabase/orders.sql       SQL para criar orders (rodar se já rodou o schema)
 supabase/seed.json        cópia do seed para conferência
 supabase/README.md        passo a passo do Supabase
 scripts/build.js          gera dist/Ita Burger.html
@@ -38,9 +39,18 @@ python3 -m http.server
 ## Supabase (banco de dados)
 
 1. Crie um projeto em https://supabase.com
-2. SQL Editor → execute `supabase/schema.sql`
+2. SQL Editor → execute `supabase/schema.sql` (ou `supabase/orders.sql` se já rodou o schema)
 3. Em `js/supabase-config.js`, preencha `url` e `anonKey` (Settings → API)
-4. Recarregue: o site lê `store_state` e o admin salva automaticamente lá.
+4. Recarregue: o site lê `store_state`; cliente insere em `orders` ao enviar WA; dono vê no Admin (poll 10s).
+
+## Checklist antes de lançar (clientes reais)
+
+- [ ] Admin → Contato e links: WhatsApp, endereço completo, horário, aviso de entrega
+- [ ] Admin → Produtos: preços reais, `sample=false` (banner sai), fotos (Admin → Fotos)
+- [ ] Admin → Contato: links Instagram/TikTok/Facebook reais (ou `on=false`)
+- [ ] Hospedar em HTTPS (Vercel/Netlify/GitHub Pages) — `dist/` ou a raiz
+- [ ] Testar 1 pedido real e conferir em Admin → Pedidos (e no WhatsApp)
+- [ ] (Recomendado) Travar escrita do banco com Supabase Auth — ver `supabase/README.md`
 
 Detalhes e segurança: `supabase/README.md`.
 
