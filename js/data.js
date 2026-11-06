@@ -1,0 +1,464 @@
+// Ita Burger — dados do cardápio/loja (fonte editável)
+// Gerado automaticamente a partir de data/cardapio.json — não editar à mão.
+// No arquivo único publicado, #ita-data tem prioridade sobre este arquivo.
+window.ITA_DATA = {
+  "v": 1,
+  "pw": {
+    "salt": "ita-8f3a1c",
+    "hash": "c63f96ea0f5ebc741e0502d8cd8fb93fa5b74fc6877c417405df3de4d9d06338"
+  },
+  "zones": [
+    {
+      "id": "z1",
+      "name": "Centro",
+      "fee": 5,
+      "on": true
+    },
+    {
+      "id": "z2",
+      "name": "Suarão",
+      "fee": 7,
+      "on": true
+    },
+    {
+      "id": "z3",
+      "name": "Gaivota",
+      "fee": 8,
+      "on": true
+    },
+    {
+      "id": "z4",
+      "name": "Cibratel",
+      "fee": 10,
+      "on": true
+    }
+  ],
+  "photos": {},
+  "config": {
+    "story": "Nascemos em Itanhaém com uma ideia simples: fazer hambúrguer de verdade, preparado na hora e entregue quentinho na sua casa. Cada lanche sai da chapa com cuidado, ingredientes de qualidade e muito sabor. Hoje atendemos toda a cidade e queremos ser o seu hambúrguer de todo dia.",
+    "about": "O Ita Burger é o hambúrguer artesanal de Itanhaém. Escolha no cardápio ou monte o seu, escolha o bairro e envie o pedido pelo WhatsApp.",
+    "name": "Ita Burger",
+    "whatsapp": "5511947400141",
+    "address": "Itanhaém",
+    "hours": "",
+    "deliveryNote": "A taxa de entrega é informada no WhatsApp, de acordo com o seu endereço.",
+    "sample": true
+  },
+  "links": [
+    {
+      "id": "ln1",
+      "label": "Instagram",
+      "url": "",
+      "on": true
+    },
+    {
+      "id": "ln2",
+      "label": "TikTok",
+      "url": "",
+      "on": true
+    },
+    {
+      "id": "ln3",
+      "label": "Facebook",
+      "url": "",
+      "on": true
+    }
+  ],
+  "ads": [],
+  "cats": [
+    {
+      "id": "hamburgueres",
+      "name": "Hambúrgueres",
+      "icon": "burger"
+    },
+    {
+      "id": "lanches",
+      "name": "Lanches",
+      "icon": "sandwich"
+    },
+    {
+      "id": "hotdogs",
+      "name": "Hot Dogs",
+      "icon": "hotdog"
+    },
+    {
+      "id": "combos",
+      "name": "Combos",
+      "icon": "combo"
+    },
+    {
+      "id": "refrigerantes",
+      "name": "Refrigerantes",
+      "icon": "drink"
+    }
+  ],
+  "products": [
+    {
+      "id": "h1",
+      "cat": "hamburgueres",
+      "name": "Ita Clássico",
+      "desc": "Blend artesanal de 150 g, queijo prato, alface, tomate e molho da casa no pão brioche.",
+      "price": 26,
+      "on": true
+    },
+    {
+      "id": "h2",
+      "cat": "hamburgueres",
+      "name": "Cheddar Bacon",
+      "desc": "Blend de 150 g, cheddar cremoso, bacon crocante e maionese defumada.",
+      "price": 32,
+      "on": true
+    },
+    {
+      "id": "h3",
+      "cat": "hamburgueres",
+      "name": "Ita Duplo",
+      "desc": "Dois blends de 150 g, queijo duplo e cebola caramelizada.",
+      "price": 38,
+      "on": true
+    },
+    {
+      "id": "h4",
+      "cat": "hamburgueres",
+      "name": "Pinguim Picante",
+      "desc": "Blend de 150 g, muçarela, jalapeño e molho picante da casa.",
+      "price": 30,
+      "on": true
+    },
+    {
+      "id": "h5",
+      "cat": "hamburgueres",
+      "name": "Ita Costela",
+      "desc": "Hambúrguer de costela, queijo prato e onion rings.",
+      "price": 36,
+      "on": true
+    },
+    {
+      "id": "l1",
+      "cat": "lanches",
+      "name": "X-Salada",
+      "desc": "Hambúrguer, queijo, alface, tomate e maionese.",
+      "price": 22,
+      "on": true
+    },
+    {
+      "id": "l2",
+      "cat": "lanches",
+      "name": "X-Bacon",
+      "desc": "Hambúrguer, queijo, bacon, alface e tomate.",
+      "price": 26,
+      "on": true
+    },
+    {
+      "id": "l3",
+      "cat": "lanches",
+      "name": "X-Tudo",
+      "desc": "Hambúrguer, queijo, presunto, bacon, ovo, alface, tomate e milho.",
+      "price": 32,
+      "on": true
+    },
+    {
+      "id": "l4",
+      "cat": "lanches",
+      "name": "Frango Crocante",
+      "desc": "Filé de frango empanado, queijo, alface e molho especial.",
+      "price": 28,
+      "on": true
+    },
+    {
+      "id": "l5",
+      "cat": "lanches",
+      "name": "Misto Quente",
+      "desc": "Pão, queijo e presunto na chapa.",
+      "price": 14,
+      "on": true
+    },
+    {
+      "id": "d1",
+      "cat": "hotdogs",
+      "name": "Tradicional",
+      "desc": "Salsicha, purê, vinagrete, milho e batata palha.",
+      "price": 16,
+      "on": true
+    },
+    {
+      "id": "d2",
+      "cat": "hotdogs",
+      "name": "Duplo",
+      "desc": "Duas salsichas, purê, vinagrete, milho e batata palha.",
+      "price": 20,
+      "on": true
+    },
+    {
+      "id": "d3",
+      "cat": "hotdogs",
+      "name": "Bacon",
+      "desc": "Salsicha, purê, bacon crocante, queijo e batata palha.",
+      "price": 22,
+      "on": true
+    },
+    {
+      "id": "d4",
+      "cat": "hotdogs",
+      "name": "Hot Dog Ita",
+      "desc": "Salsicha, cheddar, bacon, vinagrete e batata palha.",
+      "price": 24,
+      "on": true
+    },
+    {
+      "id": "c1",
+      "cat": "combos",
+      "name": "Combo Clássico",
+      "desc": "Ita Clássico, batata frita pequena e refrigerante lata.",
+      "price": 42,
+      "on": true
+    },
+    {
+      "id": "c2",
+      "cat": "combos",
+      "name": "Combo Duplo",
+      "desc": "Ita Duplo, batata frita média e refrigerante lata.",
+      "price": 55,
+      "on": true
+    },
+    {
+      "id": "c3",
+      "cat": "combos",
+      "name": "Combo Dupla",
+      "desc": "2 Ita Clássico, batata frita grande e refrigerante de 1 L.",
+      "price": 79,
+      "on": true
+    },
+    {
+      "id": "c4",
+      "cat": "combos",
+      "name": "Combo Hot Dog",
+      "desc": "2 hot dogs tradicionais e refrigerante lata.",
+      "price": 34,
+      "on": true
+    },
+    {
+      "id": "r1",
+      "cat": "refrigerantes",
+      "name": "Coca-Cola lata",
+      "desc": "350 ml.",
+      "price": 6,
+      "on": true
+    },
+    {
+      "id": "r2",
+      "cat": "refrigerantes",
+      "name": "Guaraná Antarctica lata",
+      "desc": "350 ml.",
+      "price": 6,
+      "on": true
+    },
+    {
+      "id": "r3",
+      "cat": "refrigerantes",
+      "name": "Fanta Laranja lata",
+      "desc": "350 ml.",
+      "price": 6,
+      "on": true
+    },
+    {
+      "id": "r4",
+      "cat": "refrigerantes",
+      "name": "Coca-Cola 1 L",
+      "desc": "",
+      "price": 10,
+      "on": true
+    },
+    {
+      "id": "r5",
+      "cat": "refrigerantes",
+      "name": "Coca-Cola 2 L",
+      "desc": "",
+      "price": 14,
+      "on": true
+    },
+    {
+      "id": "r6",
+      "cat": "refrigerantes",
+      "name": "Água mineral",
+      "desc": "500 ml, sem gás.",
+      "price": 4,
+      "on": true
+    }
+  ],
+  "builder": {
+    "on": true,
+    "title": "Monte o seu",
+    "intro": "Escolha o pão, a carne e tudo o que vai dentro. O valor soma sozinho.",
+    "groups": [
+      {
+        "id": "gp",
+        "name": "Pão",
+        "type": "single",
+        "required": true,
+        "opts": [
+          {
+            "id": "gp-0",
+            "name": "Brioche",
+            "price": 4
+          },
+          {
+            "id": "gp-1",
+            "name": "Australiano",
+            "price": 6
+          },
+          {
+            "id": "gp-2",
+            "name": "Pão de batata",
+            "price": 5
+          }
+        ]
+      },
+      {
+        "id": "gc",
+        "name": "Carne",
+        "type": "single",
+        "required": true,
+        "opts": [
+          {
+            "id": "gc-0",
+            "name": "Blend 150 g",
+            "price": 14
+          },
+          {
+            "id": "gc-1",
+            "name": "Duplo 2 x 150 g",
+            "price": 24
+          },
+          {
+            "id": "gc-2",
+            "name": "Triplo 3 x 150 g",
+            "price": 34
+          }
+        ]
+      },
+      {
+        "id": "gq",
+        "name": "Queijo",
+        "type": "multi",
+        "required": false,
+        "opts": [
+          {
+            "id": "gq-0",
+            "name": "Cheddar",
+            "price": 3
+          },
+          {
+            "id": "gq-1",
+            "name": "Muçarela",
+            "price": 3
+          },
+          {
+            "id": "gq-2",
+            "name": "Prato",
+            "price": 3
+          },
+          {
+            "id": "gq-3",
+            "name": "Gorgonzola",
+            "price": 5
+          }
+        ]
+      },
+      {
+        "id": "ga",
+        "name": "Adicionais",
+        "type": "multi",
+        "required": false,
+        "opts": [
+          {
+            "id": "ga-0",
+            "name": "Bacon",
+            "price": 6
+          },
+          {
+            "id": "ga-1",
+            "name": "Ovo",
+            "price": 3
+          },
+          {
+            "id": "ga-2",
+            "name": "Cebola caramelizada",
+            "price": 4
+          },
+          {
+            "id": "ga-3",
+            "name": "Onion rings",
+            "price": 5
+          },
+          {
+            "id": "ga-4",
+            "name": "Cogumelos",
+            "price": 5
+          },
+          {
+            "id": "ga-5",
+            "name": "Costela desfiada",
+            "price": 9
+          }
+        ]
+      },
+      {
+        "id": "gm",
+        "name": "Molhos",
+        "type": "multi",
+        "required": false,
+        "opts": [
+          {
+            "id": "gm-0",
+            "name": "Maionese da casa",
+            "price": 0
+          },
+          {
+            "id": "gm-1",
+            "name": "Barbecue",
+            "price": 0
+          },
+          {
+            "id": "gm-2",
+            "name": "Molho especial Ita",
+            "price": 0
+          },
+          {
+            "id": "gm-3",
+            "name": "Picante",
+            "price": 0
+          }
+        ]
+      },
+      {
+        "id": "gs",
+        "name": "Salada",
+        "type": "multi",
+        "required": false,
+        "opts": [
+          {
+            "id": "gs-0",
+            "name": "Alface",
+            "price": 0
+          },
+          {
+            "id": "gs-1",
+            "name": "Tomate",
+            "price": 0
+          },
+          {
+            "id": "gs-2",
+            "name": "Cebola roxa",
+            "price": 0
+          },
+          {
+            "id": "gs-3",
+            "name": "Picles",
+            "price": 0
+          }
+        ]
+      }
+    ]
+  }
+};

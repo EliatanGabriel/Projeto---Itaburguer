@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ita Burger</title>
+  <link id="ita-fonts" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=Bowlby+One&display=swap">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!--
+    Ita Burger — arquitetura modular
+    index.html .............. entrada (estrutura mínima)
+    css/reset.css ........... safe-area/viewport
+    css/style.css ........... layout (era #ita-css)
+    js/supabase-config.js ... URL/anonKey do Supabase (preencher)
+    js/supabase.js .......... cliente Supabase (store_state)
+    js/data.js .............. dados (era #ita-data) — gerado de data/cardapio.json
+    js/assets.js ............ logo/hero + ícones SVG
+    js/utils.js ............. DOM, BRL/telefone, store, SHA-256
+    js/state.js ............. estado global (S, carrinho, pedido, UI)
+    js/cart.js .............. carrinho, "monte o seu", WhatsApp
+    js/render.js ............ vitrine, cardápio, home, carrinho
+    js/admin.js ............. administração, CRUD e publicar
+    js/actions.js ........... eventos globais
+    js/main.js .............. inicialização
+    assets/images/*.jpg ..... logo/hero
+    scripts/build.js ........ gera dist/Ita Burger.html (arquivo único publicável)
+  -->
+  <div id="app"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/assets.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/actions.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

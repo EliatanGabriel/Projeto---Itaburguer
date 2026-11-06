@@ -1,0 +1,8 @@
+node_modules/
+.env
+.env.*
+.supabase/
+*.log
+.DS_Store
+# NUNCA commite: service_role key, postgres password, .env
+# OK commitar: js/supabase-config.js usa anon/publishable key (pública por design)
