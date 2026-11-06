@@ -31,7 +31,7 @@ async function sbSave(state){
 function orderRow(o){return{id:o.id,t:o.t,sig:o.sig||'',name:o.name||'',mode:o.mode||'',hood:o.hood||'',items:o.items||[],sub:Number(o.sub)||0,fee:Number(o.fee)||0,total:Number(o.total)||0,pay:o.pay||'',st:o.st||'todo'}}
 async function sbInsertOrder(o){
   if(!SUPABASE)return false;
-  const {error}=await SUPABASE.from('orders').upsert(orderRow(o));
+  const {error}=await SUPABASE.from('orders').insert(orderRow(o));
   if(error)throw new Error(error.message||'Erro ao inserir pedido');
   return true;
 }
@@ -52,4 +52,18 @@ async function sbDeleteOrder(id){
   const {error}=await SUPABASE.from('orders').delete().eq('id',id);
   if(error)throw new Error(error.message||'Erro ao excluir pedido');
   return true;
+}
+async function sbAuthSignIn(email,password){
+  if(!SUPABASE)return null;
+  const {data,error}=await SUPABASE.auth.signInWithPassword({email,password});
+  if(error)throw new Error(error.message||'Login falhou');
+  return data;
+}
+async function sbAuthSignOut(){
+  if(!SUPABASE)return;
+  await SUPABASE.auth.signOut();
+}
+async function sbAuthUser(){
+  if(!SUPABASE)return null;
+  try{const {data}=await SUPABASE.auth.getSession();return data&&data.session?data.session.user:null}catch(e){return null}
 }

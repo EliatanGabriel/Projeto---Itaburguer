@@ -1,5 +1,5 @@
 -- Ita Burger — pedidos (cole no SQL Editor; rode UMA vez, mesmo se já rodou schema.sql)
--- O cliente insere o pedido ao clicar em "Enviar pelo WhatsApp"; o dono vê no Admin.
+-- TRAVADO: cliente (anon) só INSERE; dono (authenticated) lê/atualiza/exclui.
 
 create table if not exists public.orders (
   id text primary key,
@@ -23,17 +23,13 @@ create index if not exists orders_sig_idx on public.orders (sig);
 alter table public.orders enable row level security;
 
 drop policy if exists "orders select" on public.orders;
-create policy "orders select" on public.orders for select using (true);
+create policy "orders select" on public.orders for select to authenticated using (true);
 
 drop policy if exists "orders insert" on public.orders;
-create policy "orders insert" on public.orders for insert with check (true);
+create policy "orders insert" on public.orders for insert to anon, authenticated with check (true);
 
 drop policy if exists "orders update" on public.orders;
-create policy "orders update" on public.orders for update using (true) with check (true);
+create policy "orders update" on public.orders for update to authenticated using (true) with check (true);
 
 drop policy if exists "orders delete" on public.orders;
-create policy "orders delete" on public.orders for delete using (true);
-
--- ATENÇÃO (demo): leitura/escrita pública como no store_state.
--- Para produção, restrinja select/update/delete a auth.role()='authenticated'
--- e mantenha só insert público. Confira supabase/README.md.
+create policy "orders delete" on public.orders for delete to authenticated using (true);

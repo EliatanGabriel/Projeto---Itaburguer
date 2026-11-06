@@ -54,7 +54,7 @@ const ACT={
   rmimg(el){if(el.dataset.k==='prod'){const p=S.products.find(x=>x.id===el.dataset.id);if(p)p.img=''}else delete S.photos[el.dataset.id];struct('Foto removida.')},
 
   admin(){openAdmin()},closeadmin(){closeAdmin()},
-  logout(){ui.unlocked=false;SS.del('ita-admin');renderAdmin()},
+  logout(){ui.unlocked=false;SS.del('ita-admin');if(typeof sbAuthSignOut==='function'&&sbOn)sbAuthSignOut().catch(()=>{});renderAdmin()},
   atab(el){ui.atab=el.dataset.v;renderAdmin()},
   publish(){doPublish()},
   dismisssample(){S.config.sample=false;struct()},
@@ -127,6 +127,21 @@ document.addEventListener('submit',async e=>{
   const f=e.target;e.preventDefault();
   if(f.id==='loginform'){
     const err=$('#loginerr');err.textContent='';
+    if(typeof sbAuthSignIn==='function'&&sbOn){
+      const email=$('#pw-email')?$('#pw-email').value.trim():'';
+      const pass=$('#pw').value;
+      if(!email||!pass){err.textContent='Informe e-mail e senha.';return}
+      if(ui.tries>=3){await new Promise(r=>setTimeout(r,1500))}
+      err.textContent='Entrando…';
+      try{
+        await sbAuthSignIn(email,pass);
+        ui.unlocked=true;ui.tries=0;SS.set('ita-admin','1');renderAdmin();
+        // recarrega pedidos (agora pode ler, lock) e salva pendente
+        try{const list=await sbListOrders();if(Array.isArray(list)){ORDERS=list;saveOrders()}}catch(e){}
+        if(dirty())flushSave();
+      }catch(e){ui.tries++;err.textContent=e&&e.message||'Login falhou.'}
+      return;
+    }
     if(!(window.crypto&&crypto.subtle)){err.textContent='Este navegador não consegue verificar a senha.';return}
     if(ui.tries>=3){await new Promise(r=>setTimeout(r,1500))}
     const ok=(await sha(S.pw.salt+':'+$('#pw').value))===S.pw.hash;

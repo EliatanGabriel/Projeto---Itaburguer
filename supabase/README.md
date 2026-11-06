@@ -2,7 +2,7 @@
 
 Banco: `store_state` (1 linha, `id=1`, `data jsonb` = JSON da loja) + `orders` (pedidos de todos os aparelhos).
 
-## Passo a passo
+## Passo a passo (inclui TRAVA)
 
 1. Crie um projeto em https://supabase.com (plano free serve).
 2. No painel do projeto, abra **SQL Editor → New query** e cole/execute todo o conteúdo de `supabase/schema.sql`.
@@ -10,20 +10,21 @@ Banco: `store_state` (1 linha, `id=1`, `data jsonb` = JSON da loja) + `orders` (
    - `Project URL` (ex: `https://abcdefgh.supabase.co`)
    - `anon public` key (é pública, pode ir no frontend)
 4. Edite `js/supabase-config.js` e preencha `url` e `anonKey`.
-5. Sirva o site (`python3 -m http.server`) e teste:
-   - Abrir o site carrega os dados do banco.
-   - Entrar no Admin, alterar preço/produto → status “Salvo no Supabase”.
-   - Recarregar ou abrir em outra aba → aparece a alteração.
-6. Se for gerar o arquivo único, rode `node scripts/build.js` (o `dist/Ita Burger.html` já inclui o CDN do Supabase e a config).
+5. **Travar escrita (obrigatório antes de divulgar):**
+   - SQL Editor → execute `supabase/lock.sql` (ou `supabase/orders.sql` já vem travado)
+   - **Authentication → Users → Add user** → crie **1 usuário só do dono** (e-mail + senha forte, marque Auto Confirm)
+6. Rode `node scripts/build.js` e faça deploy na Vercel (push no GitHub).
+7. Teste:
+   - Visitante abre o site → vê cardápio (leitura pública) e consegue pedir (insert em `orders`).
+   - Admin → pede **e-mail + senha do Auth** → edita → “Salvo no Supabase”.
+   - Sem login, tentar escrever via API → bloqueado (RLS).
 
-## Segurança — leia antes de divulgar
+## Segurança
 
-A política padrão em `schema.sql` é **pública para leitura e escrita** (modo demo, para funcionar sem login). Quem tiver a `anon key` consegue escrever na tabela. A senha do admin (`js/admin.js`) é só uma trava de tela — não protege o banco.
-
-Para produção, faça um destas (recomendado):
-
-- Crie um usuário em **Authentication → Users** (só você), depois troque no SQL Editor as políticas de `insert/update` para `using (auth.role() = 'authenticated')` e faça login via Supabase Auth no lugar da senha local. Fale comigo que eu migro o painel para Auth.
-- Ou mantenha a demo só em ambiente interno.
+A política em `schema.sql`/`orders.sql` já é **travada**:
+- `store_state`: select público, insert/update só `authenticated`
+- `orders`: insert público (cliente), select/update/delete só `authenticated`
+- Login do Admin é via Supabase Auth (`signInWithPassword`). A senha local antiga só vale sem Supabase.
 
 ## Como funciona no código
 
