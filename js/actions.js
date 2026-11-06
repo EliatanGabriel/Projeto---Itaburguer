@@ -31,7 +31,7 @@ const ACT={
     if(errs.length){
       e.preventDefault();box.hidden=false;box.className='err';
       box.innerHTML='Falta pouco para enviar:<ul>'+errs.map(x=>'<li>'+esc(x[1])+'</li>').join('')+'</ul>';
-      const f=errs[0][0]&&$('#'+errs[0][0]);if(f)f.focus();box.scrollIntoView({block:'center'});return;
+      const f=errs[0][0]&&$('#'+errs[0][0]);if(f)f.focus();if(box.scrollIntoView)box.scrollIntoView({block:'center'});return;
     }
     box.hidden=true;$('#wahint').hidden=false;logOrder();
   },
@@ -44,9 +44,9 @@ const ACT={
   gomenu(){ui.page='menu';renderPage();renderTabs();renderView();scrollTo(0,0)},
   home(){ui.page='home';renderPage();scrollTo(0,0)},
   goabout(){ui.page='about';renderPage();scrollTo(0,0)},
-  goloc(){ui.page='home';renderPage();setTimeout(()=>$('#locsec').scrollIntoView({behavior:'smooth'}),30)},
+  goloc(){ui.page='home';renderPage();setTimeout(()=>{const el=$('#locsec');if(el&&el.scrollIntoView)el.scrollIntoView({behavior:'smooth'})},30)},
   fm(el){ui.fm=el.dataset.set!==undefined?Number(el.dataset.set):ui.fm+Number(el.dataset.v);renderAdmin()},
-  scr(el){const t=$(el.dataset.t);if(t)t.scrollIntoView({behavior:'smooth'})},
+  scr(el){const t=$(el.dataset.t);if(t&&t.scrollIntoView)t.scrollIntoView({behavior:'smooth'})},
   ost(el){ui.ost=el.dataset.v;renderAdmin()},
   oadv(el){const o=ORDERS.find(x=>x.id===el.dataset.id);if(!o)return;const i=STAT.findIndex(x=>x[0]===o.st);if(STAT[i+1]){o.st=STAT[i+1][0];saveOrders()}renderAdmin()},
   addzone(){const n=$('#nz-name').value.trim();if(!n){say('Dê um nome à região.','bad');$('#nz-name').focus();return}S.zones.push({id:uid(),name:n,fee:parseMoney($('#nz-fee').value),on:true});struct('Região adicionada.')},

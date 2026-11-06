@@ -137,7 +137,7 @@ function applyOrderUI(){
 
 function updateWa(){const a=$('#wa');if(a)a.href=waUrl();const m=$('#msgbox');if(m)m.value=buildMsg()}
 
-function renderPage(){const p=ui.page;$('#home').hidden=p!=='home';$('#aboutpage').hidden=p!=='about';$('#menupage').hidden=p!=='menu';$('#foot').hidden=true}
+function renderPage(){const p=ui.page;$('#home').hidden=p!=='home';$('#aboutpage').hidden=p!=='about';$('#menupage').hidden=p!=='menu';$('#foot').hidden=false}
 
 function renderHome(){
   const c=S.config,ad=encodeURIComponent((c.address||'Itanhaém')+', SP'),hs=photo('home');
