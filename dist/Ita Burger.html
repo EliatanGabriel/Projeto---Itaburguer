@@ -67,11 +67,13 @@ h1,h2,h3,h4,p{overflow-wrap:anywhere}
 
 /* cabeçalho */
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--black);border-bottom:1px solid var(--line)}
-.top .wrap{height:auto;min-height:var(--hh);display:flex;align-items:center;gap:6px;padding-block:6px}
-.top .wrap .sp{flex:1 1 8px;min-width:8px}
-.top .btn{flex:0 1 auto;min-width:0;min-height:38px;padding:0 10px;font-size:13.5px;letter-spacing:.03em}
-.brand{height:40px;width:auto;max-width:38vw;display:block;flex:0 1 auto;object-fit:contain}
-@media (max-width:520px){#theme-toggle .tl,#admin-open,#cart-open .lbl-txt{display:none} #cart-open{padding:0 10px} .top .btn{padding:0 9px;font-size:13px} .brand{height:36px}}
+.top .wrap{height:auto;min-height:var(--hh);display:flex;align-items:center;gap:6px;padding-block:6px;flex-wrap:nowrap;overflow:visible}
+.top .wrap .sp{flex:1 1 8px;min-width:6px}
+.top .btn{flex:0 0 auto;min-width:0;min-height:38px;padding:0 10px;font-size:13.5px;letter-spacing:.03em;white-space:nowrap}
+.brand{height:40px;width:auto;max-width:30vw;display:block;flex:0 1 auto;object-fit:contain}
+.adm-ico{display:none;font-size:16px}
+@media (max-width:520px){.adm-ico{display:inline} #theme-toggle .tl,#cart-open .lbl-txt,#admin-open .lbl-txt{display:none} #cart-open{padding:0 8px} #admin-open{padding:0 8px;font-size:13px} .top .btn{padding:0 8px;font-size:13px} .brand{height:34px;max-width:26vw}}
+@media (min-width:521px){.top .wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}}
 .cnt{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:99px;background:var(--cream);color:var(--red);font:700 14px/1 var(--label)}
 
 /* hero */
@@ -995,8 +997,8 @@ function shell(){
   <div id="ads" class="ads" hidden aria-live="polite"></div>
   <header class="top"><div class="wrap"><img id="brand" class="brand" src="${IMG.mark}" alt=""><span class="sp"></span>
     <button class="btn btn-line btn-sm" data-act="theme" id="theme-toggle" aria-pressed="false">☀️<span class="tl"> Claro</span></button>
-    <button class="btn btn-line btn-sm" data-act="admin" id="admin-open">Admin</button>
-    <button class="btn btn-red btn-sm" data-act="cart" id="cart-open"><span class="lbl-txt">Carrinho</span> <span id="cnt" class="cnt">0</span></button></div></header>
+    <button class="btn btn-line btn-sm" data-act="admin" id="admin-open" aria-label="Administração"><span class="adm-ico">⚙️</span><span class="lbl-txt">Admin</span></button>
+    <button class="btn btn-red btn-sm" data-act="cart" id="cart-open" aria-label="Carrinho"><span class="lbl-txt">Carrinho</span> <span id="cnt" class="cnt">0</span></button></div></header>
   <main>
     <section id="home" class="wrap home"></section><section id="aboutpage" class="wrap home" hidden></section>
     <div id="menupage" hidden><div class="wrap mp-top"><button class="btn btn-line btn-sm" data-act="home">← Início</button></div>

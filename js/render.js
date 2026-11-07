@@ -7,8 +7,8 @@ function shell(){
   <div id="ads" class="ads" hidden aria-live="polite"></div>
   <header class="top"><div class="wrap"><img id="brand" class="brand" src="${IMG.mark}" alt=""><span class="sp"></span>
     <button class="btn btn-line btn-sm" data-act="theme" id="theme-toggle" aria-pressed="false">☀️<span class="tl"> Claro</span></button>
-    <button class="btn btn-line btn-sm" data-act="admin" id="admin-open">Admin</button>
-    <button class="btn btn-red btn-sm" data-act="cart" id="cart-open"><span class="lbl-txt">Carrinho</span> <span id="cnt" class="cnt">0</span></button></div></header>
+    <button class="btn btn-line btn-sm" data-act="admin" id="admin-open" aria-label="Administração"><span class="adm-ico">⚙️</span><span class="lbl-txt">Admin</span></button>
+    <button class="btn btn-red btn-sm" data-act="cart" id="cart-open" aria-label="Carrinho"><span class="lbl-txt">Carrinho</span> <span id="cnt" class="cnt">0</span></button></div></header>
   <main>
     <section id="home" class="wrap home"></section><section id="aboutpage" class="wrap home" hidden></section>
     <div id="menupage" hidden><div class="wrap mp-top"><button class="btn btn-line btn-sm" data-act="home">← Início</button></div>
