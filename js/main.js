@@ -3,14 +3,12 @@
 
 (async function(){
   shell();
+  if(typeof applyTheme==='function')applyTheme(getTheme());
   if(typeof sbLoad==='function'&&sbOn){
     try{
       const remote=await sbLoad();
       if(remote&&remote.v!==undefined){DATA=remote;S=clone(DATA);normState();LS.del('ita-draft');SS.del('ita-pub')}
     }catch(e){console.warn('[ita] Supabase load falhou, usando dados locais:',e&&e.message)}
-    try{
-      if(typeof sbAuthUser==='function'){const u=await sbAuthUser();if(u){ui.unlocked=true;SS.set('ita-admin','1')}}
-    }catch(e){}
     try{
       const list=await sbListOrders();
       if(Array.isArray(list)&&list.length){ORDERS=list;saveOrders()}

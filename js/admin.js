@@ -49,9 +49,7 @@ const iconOpts=ICONS;
 function renderAdmin(){
   const sh=$('#admin');const top=sh.scrollTop;const body=$('#adminbody');
   if(!ui.unlocked){
-    const auth=sbReady();
-    body.innerHTML=`<form id="loginform" class="acard" style="max-width:420px" novalidate><h3>Área da administração</h3><p class="note">${auth?'Entre com o e-mail e senha criados no Supabase Auth (Authentication → Users).':'Digite a senha para alterar produtos, preços, links e anúncios.'}</p>
-    ${auth?'<label class="fld"><span class="lbl">E-mail</span><input class="in" id="pw-email" type="email" autocomplete="username"></label>':''}
+    body.innerHTML=`<form id="loginform" class="acard" style="max-width:420px" novalidate><h3>Área da administração</h3><p class="note">Digite a senha para alterar produtos, preços, links e anúncios.</p>
     <label class="fld"><span class="lbl">Senha</span><input class="in" id="pw" type="password" autocomplete="current-password"></label>
     <button class="btn btn-gold" type="submit">Entrar</button><p id="loginerr" class="msgline bad"></p></form>`;
     updateStatus();return;
@@ -142,8 +140,6 @@ function aLinks(){
 }
 
 function aSec(){
-  if(sbReady())return `<div class="acard"><h3>Senha / usuário</h3><p class="note">Com Supabase travado, o login é via <strong>Supabase Auth</strong>. Para trocar a senha, vá no painel Supabase → Authentication → Users → seu usuário → Reset password. A senha antiga (hash local) não é mais usada quando o Supabase está configurado.</p></div>
-  <div class="acard"><h3>Como as mudanças chegam ao site</h3><p class="note">Com Supabase configurado, cada alteração é salva automaticamente no banco (tabela store_state) e aparece para todos. Sem Supabase, fica como rascunho neste aparelho até publicar via Artifact.</p></div>`;
   return `<form class="acard" id="pwform" style="max-width:460px" novalidate><h3>Trocar a senha</h3>
   <label class="fld"><span class="lbl">Senha atual</span><input class="in" id="pw-old" type="password" autocomplete="current-password"></label>
   <label class="fld"><span class="lbl">Nova senha (mínimo 6 caracteres)</span><input class="in" id="pw-new" type="password" autocomplete="new-password"></label>

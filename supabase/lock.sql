@@ -38,5 +38,4 @@ create policy "orders delete"
   to authenticated
   using (true);
 
--- Depois: Authentication -> Users -> Add user (CRIE UM SÓ, só dono)
--- Use esse e-mail/senha no login do Admin do site.
+-- Admin: login só com senha (itaburger) via hash local (S.pw). Sem campo de e-mail.

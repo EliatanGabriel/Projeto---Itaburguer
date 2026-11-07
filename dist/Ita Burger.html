@@ -13,6 +13,25 @@
   --cartbar-h:env(safe-area-inset-bottom,0px);
   color-scheme:dark;
 }
+:root[data-theme="light"]{
+  --black:#f6efe6; --coal:#ffffff; --coal2:#efe5d6; --line:#e0d2bd;
+  --cream:#221a14; --muted:#6f6158; --gold:#e29d00; --gold-d:#a56f00; --red:#bb1e37; --red-hi:#d92d4d;
+  --bad:#a3192d; --good:#0c7a3f;
+  color-scheme:light;
+}
+:root[data-theme="light"] .hero{background:var(--coal)}
+:root[data-theme="light"] .cartbar{background:linear-gradient(to top,var(--black) 72%,rgba(246,239,230,0))}
+:root[data-theme="light"] .cb,:root[data-theme="light"] .btn-red,:root[data-theme="light"] .hbtn,:root[data-theme="light"] .tab.build,:root[data-theme="light"] .bsum .btn{color:#fef4eb}
+:root[data-theme="light"] .hh,:root[data-theme="light"] .hc{color:#fef4eb}
+:root[data-theme="light"] .hh p,:root[data-theme="light"] .hc p{color:#e8ddd2}
+:root[data-theme="light"] .opt[aria-pressed=true]{background:#fff4d6}
+:root[data-theme="light"] .opt[aria-pressed=true] .dot{box-shadow:inset 0 0 0 3.5px #fff4d6}
+:root[data-theme="light"] .err{background:#ffe9e9;color:#7a0f1f}
+:root[data-theme="light"] .okbox{background:#e4f6ec;color:#0d4a26}
+:root[data-theme="light"] .sample{background:#fff4d0}
+:root[data-theme="light"] .cd.has{background:#ffe9b3}
+#theme-toggle{white-space:nowrap}
+@media (max-width:520px){#theme-toggle .tl{display:none}}
 body.has-cart{--cartbar-h:calc(72px + env(safe-area-inset-bottom,0px))}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -53,7 +72,7 @@ h1,h2,h3,h4,p{overflow-wrap:anywhere}
 .cnt{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:99px;background:var(--cream);color:var(--red);font:700 14px/1 var(--label)}
 
 /* hero */
-.hero{background:#000;border-bottom:1px solid var(--line)}
+.hero{background:var(--black);border-bottom:1px solid var(--line)}
 .hero .wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;align-items:center;padding-block:18px 24px}
 .hero-img{display:block;width:min(74%,320px);margin:0 auto;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 16%);mask-image:linear-gradient(to bottom,transparent 0,#000 16%)}
 .eyebrow{font:700 14px/1 var(--label);letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:0}
@@ -229,6 +248,10 @@ const normPhone=s=>{let d=String(s).replace(/\D/g,'');if(d.length===10||d.length
 const fmtPhone=d=>{d=String(d||'').replace(/\D/g,'');if(d.indexOf('55')===0&&d.length>=12)d=d.slice(2);if(d.length===11)return'('+d.slice(0,2)+') '+d.slice(2,7)+'-'+d.slice(7);if(d.length===10)return'('+d.slice(0,2)+') '+d.slice(2,6)+'-'+d.slice(6);return d};
 
 const sha=async s=>{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')};
+
+const getTheme=()=>LS.get('ita-theme')==='light'?'light':'dark';
+function applyTheme(t){t=t==='light'?'light':'dark';document.documentElement.setAttribute('data-theme',t);LS.set('ita-theme',t);const b=$('#theme-toggle');if(b){b.innerHTML=(t==='light'?'🌙':'☀️')+'<span class="tl">'+(t==='light'?' Escuro':' Claro')+'</span>';b.setAttribute('aria-pressed',String(t==='light'));b.title=t==='light'?'Mudar para modo escuro':'Mudar para modo claro';b.setAttribute('aria-label',t==='light'?'Mudar para modo escuro':'Mudar para modo claro')}}
+try{document.documentElement.setAttribute('data-theme',getTheme())}catch(e){}
 
 
 
@@ -967,6 +990,7 @@ function shell(){
   <div id="draftbar" class="draftbar" hidden></div>
   <div id="ads" class="ads" hidden aria-live="polite"></div>
   <header class="top"><div class="wrap"><img id="brand" class="brand" src="${IMG.mark}" alt=""><span class="sp"></span>
+    <button class="btn btn-line btn-sm" data-act="theme" id="theme-toggle" aria-pressed="false">☀️<span class="tl"> Claro</span></button>
     <button class="btn btn-line btn-sm" data-act="admin" id="admin-open">Admin</button>
     <button class="btn btn-red btn-sm" data-act="cart" id="cart-open">Carrinho <span id="cnt" class="cnt">0</span></button></div></header>
   <main>
@@ -1179,9 +1203,7 @@ const iconOpts=ICONS;
 function renderAdmin(){
   const sh=$('#admin');const top=sh.scrollTop;const body=$('#adminbody');
   if(!ui.unlocked){
-    const auth=sbReady();
-    body.innerHTML=`<form id="loginform" class="acard" style="max-width:420px" novalidate><h3>Área da administração</h3><p class="note">${auth?'Entre com o e-mail e senha criados no Supabase Auth (Authentication → Users).':'Digite a senha para alterar produtos, preços, links e anúncios.'}</p>
-    ${auth?'<label class="fld"><span class="lbl">E-mail</span><input class="in" id="pw-email" type="email" autocomplete="username"></label>':''}
+    body.innerHTML=`<form id="loginform" class="acard" style="max-width:420px" novalidate><h3>Área da administração</h3><p class="note">Digite a senha para alterar produtos, preços, links e anúncios.</p>
     <label class="fld"><span class="lbl">Senha</span><input class="in" id="pw" type="password" autocomplete="current-password"></label>
     <button class="btn btn-gold" type="submit">Entrar</button><p id="loginerr" class="msgline bad"></p></form>`;
     updateStatus();return;
@@ -1272,8 +1294,6 @@ function aLinks(){
 }
 
 function aSec(){
-  if(sbReady())return `<div class="acard"><h3>Senha / usuário</h3><p class="note">Com Supabase travado, o login é via <strong>Supabase Auth</strong>. Para trocar a senha, vá no painel Supabase → Authentication → Users → seu usuário → Reset password. A senha antiga (hash local) não é mais usada quando o Supabase está configurado.</p></div>
-  <div class="acard"><h3>Como as mudanças chegam ao site</h3><p class="note">Com Supabase configurado, cada alteração é salva automaticamente no banco (tabela store_state) e aparece para todos. Sem Supabase, fica como rascunho neste aparelho até publicar via Artifact.</p></div>`;
   return `<form class="acard" id="pwform" style="max-width:460px" novalidate><h3>Trocar a senha</h3>
   <label class="fld"><span class="lbl">Senha atual</span><input class="in" id="pw-old" type="password" autocomplete="current-password"></label>
   <label class="fld"><span class="lbl">Nova senha (mínimo 6 caracteres)</span><input class="in" id="pw-new" type="password" autocomplete="new-password"></label>
@@ -1494,8 +1514,10 @@ const ACT={
   addmo(){const t=parseMoney($('#mo-total').value);if(!t){say('Informe o valor do pedido.','bad');return}const h=$('#mo-hood').value.trim();const o={id:uid(),t:Date.now(),name:$('#mo-name').value.trim()||'Cliente',mode:h?'entrega':'retirada',hood:h,items:['Pedido registrado manualmente'],sub:t,fee:0,total:t,pay:'',st:'todo'};ORDERS.unshift(o);saveOrders();if(typeof sbInsertOrder==='function'&&sbOn)sbInsertOrder(o).catch(e=>console.warn('[ita] pedido manual falhou:',e&&e.message));struct('Pedido registrado.')},
   rmimg(el){if(el.dataset.k==='prod'){const p=S.products.find(x=>x.id===el.dataset.id);if(p)p.img=''}else delete S.photos[el.dataset.id];struct('Foto removida.')},
 
+  theme(){applyTheme(document.documentElement.getAttribute('data-theme')==='light'?'dark':'light')},
+
   admin(){openAdmin()},closeadmin(){closeAdmin()},
-  logout(){ui.unlocked=false;SS.del('ita-admin');if(typeof sbAuthSignOut==='function'&&sbOn)sbAuthSignOut().catch(()=>{});renderAdmin()},
+  logout(){ui.unlocked=false;SS.del('ita-admin');renderAdmin()},
   atab(el){ui.atab=el.dataset.v;renderAdmin()},
   publish(){doPublish()},
   dismisssample(){S.config.sample=false;struct()},
@@ -1568,25 +1590,13 @@ document.addEventListener('submit',async e=>{
   const f=e.target;e.preventDefault();
   if(f.id==='loginform'){
     const err=$('#loginerr');err.textContent='';
-    if(typeof sbAuthSignIn==='function'&&sbOn){
-      const email=$('#pw-email')?$('#pw-email').value.trim():'';
-      const pass=$('#pw').value;
-      if(!email||!pass){err.textContent='Informe e-mail e senha.';return}
-      if(ui.tries>=3){await new Promise(r=>setTimeout(r,1500))}
-      err.textContent='Entrando…';
-      try{
-        await sbAuthSignIn(email,pass);
-        ui.unlocked=true;ui.tries=0;SS.set('ita-admin','1');renderAdmin();
-        // recarrega pedidos (agora pode ler, lock) e salva pendente
-        try{const list=await sbListOrders();if(Array.isArray(list)){ORDERS=list;saveOrders()}}catch(e){}
-        if(dirty())flushSave();
-      }catch(e){ui.tries++;err.textContent=e&&e.message||'Login falhou.'}
-      return;
-    }
     if(!(window.crypto&&crypto.subtle)){err.textContent='Este navegador não consegue verificar a senha.';return}
     if(ui.tries>=3){await new Promise(r=>setTimeout(r,1500))}
     const ok=(await sha(S.pw.salt+':'+$('#pw').value))===S.pw.hash;
-    if(ok){ui.unlocked=true;ui.tries=0;SS.set('ita-admin','1');renderAdmin()}
+    if(ok){ui.unlocked=true;ui.tries=0;SS.set('ita-admin','1');renderAdmin();
+       try{const list=await sbListOrders();if(Array.isArray(list)&&list.length){ORDERS=list;saveOrders()}}catch(e){}
+       if(dirty())flushSave();
+    }
     else{ui.tries++;err.textContent='Senha incorreta.';$('#pw').select()}
   }
   if(f.id==='pwform'){
@@ -1608,14 +1618,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(ui.admin)closeAd
 
 (async function(){
   shell();
+  if(typeof applyTheme==='function')applyTheme(getTheme());
   if(typeof sbLoad==='function'&&sbOn){
     try{
       const remote=await sbLoad();
       if(remote&&remote.v!==undefined){DATA=remote;S=clone(DATA);normState();LS.del('ita-draft');SS.del('ita-pub')}
     }catch(e){console.warn('[ita] Supabase load falhou, usando dados locais:',e&&e.message)}
-    try{
-      if(typeof sbAuthUser==='function'){const u=await sbAuthUser();if(u){ui.unlocked=true;SS.set('ita-admin','1')}}
-    }catch(e){}
     try{
       const list=await sbListOrders();
       if(Array.isArray(list)&&list.length){ORDERS=list;saveOrders()}

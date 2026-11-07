@@ -53,8 +53,10 @@ const ACT={
   addmo(){const t=parseMoney($('#mo-total').value);if(!t){say('Informe o valor do pedido.','bad');return}const h=$('#mo-hood').value.trim();const o={id:uid(),t:Date.now(),name:$('#mo-name').value.trim()||'Cliente',mode:h?'entrega':'retirada',hood:h,items:['Pedido registrado manualmente'],sub:t,fee:0,total:t,pay:'',st:'todo'};ORDERS.unshift(o);saveOrders();if(typeof sbInsertOrder==='function'&&sbOn)sbInsertOrder(o).catch(e=>console.warn('[ita] pedido manual falhou:',e&&e.message));struct('Pedido registrado.')},
   rmimg(el){if(el.dataset.k==='prod'){const p=S.products.find(x=>x.id===el.dataset.id);if(p)p.img=''}else delete S.photos[el.dataset.id];struct('Foto removida.')},
 
+  theme(){applyTheme(document.documentElement.getAttribute('data-theme')==='light'?'dark':'light')},
+
   admin(){openAdmin()},closeadmin(){closeAdmin()},
-  logout(){ui.unlocked=false;SS.del('ita-admin');if(typeof sbAuthSignOut==='function'&&sbOn)sbAuthSignOut().catch(()=>{});renderAdmin()},
+  logout(){ui.unlocked=false;SS.del('ita-admin');renderAdmin()},
   atab(el){ui.atab=el.dataset.v;renderAdmin()},
   publish(){doPublish()},
   dismisssample(){S.config.sample=false;struct()},
@@ -127,25 +129,13 @@ document.addEventListener('submit',async e=>{
   const f=e.target;e.preventDefault();
   if(f.id==='loginform'){
     const err=$('#loginerr');err.textContent='';
-    if(typeof sbAuthSignIn==='function'&&sbOn){
-      const email=$('#pw-email')?$('#pw-email').value.trim():'';
-      const pass=$('#pw').value;
-      if(!email||!pass){err.textContent='Informe e-mail e senha.';return}
-      if(ui.tries>=3){await new Promise(r=>setTimeout(r,1500))}
-      err.textContent='Entrando…';
-      try{
-        await sbAuthSignIn(email,pass);
-        ui.unlocked=true;ui.tries=0;SS.set('ita-admin','1');renderAdmin();
-        // recarrega pedidos (agora pode ler, lock) e salva pendente
-        try{const list=await sbListOrders();if(Array.isArray(list)){ORDERS=list;saveOrders()}}catch(e){}
-        if(dirty())flushSave();
-      }catch(e){ui.tries++;err.textContent=e&&e.message||'Login falhou.'}
-      return;
-    }
     if(!(window.crypto&&crypto.subtle)){err.textContent='Este navegador não consegue verificar a senha.';return}
     if(ui.tries>=3){await new Promise(r=>setTimeout(r,1500))}
     const ok=(await sha(S.pw.salt+':'+$('#pw').value))===S.pw.hash;
-    if(ok){ui.unlocked=true;ui.tries=0;SS.set('ita-admin','1');renderAdmin()}
+    if(ok){ui.unlocked=true;ui.tries=0;SS.set('ita-admin','1');renderAdmin();
+       try{const list=await sbListOrders();if(Array.isArray(list)&&list.length){ORDERS=list;saveOrders()}}catch(e){}
+       if(dirty())flushSave();
+    }
     else{ui.tries++;err.textContent='Senha incorreta.';$('#pw').select()}
   }
   if(f.id==='pwform'){

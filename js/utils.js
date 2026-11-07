@@ -28,3 +28,7 @@ const fmtPhone=d=>{d=String(d||'').replace(/\D/g,'');if(d.indexOf('55')===0&&d.l
 
 const sha=async s=>{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')};
 
+const getTheme=()=>LS.get('ita-theme')==='light'?'light':'dark';
+function applyTheme(t){t=t==='light'?'light':'dark';document.documentElement.setAttribute('data-theme',t);LS.set('ita-theme',t);const b=$('#theme-toggle');if(b){b.innerHTML=(t==='light'?'🌙':'☀️')+'<span class="tl">'+(t==='light'?' Escuro':' Claro')+'</span>';b.setAttribute('aria-pressed',String(t==='light'));b.title=t==='light'?'Mudar para modo escuro':'Mudar para modo claro';b.setAttribute('aria-label',t==='light'?'Mudar para modo escuro':'Mudar para modo claro')}}
+try{document.documentElement.setAttribute('data-theme',getTheme())}catch(e){}
+

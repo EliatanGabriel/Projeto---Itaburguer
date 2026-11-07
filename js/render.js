@@ -6,6 +6,7 @@ function shell(){
   <div id="draftbar" class="draftbar" hidden></div>
   <div id="ads" class="ads" hidden aria-live="polite"></div>
   <header class="top"><div class="wrap"><img id="brand" class="brand" src="${IMG.mark}" alt=""><span class="sp"></span>
+    <button class="btn btn-line btn-sm" data-act="theme" id="theme-toggle" aria-pressed="false">☀️<span class="tl"> Claro</span></button>
     <button class="btn btn-line btn-sm" data-act="admin" id="admin-open">Admin</button>
     <button class="btn btn-red btn-sm" data-act="cart" id="cart-open">Carrinho <span id="cnt" class="cnt">0</span></button></div></header>
   <main>
